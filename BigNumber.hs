@@ -24,6 +24,12 @@ output num
 outputDiv :: (BigNumber, BigNumber) -> String
 outputDiv (x, y) = "quotient: " ++ output x ++ "; remainder: " ++ output y
 
+convToInt :: BigNumber -> Int
+convToInt y = read (output y) :: Int
+
+selectIndex :: [BigNumber] -> BigNumber -> BigNumber
+selectIndex x y = x !! convToInt y
+
 subBN :: BigNumber -> BigNumber -> BigNumber
 subBN x y
   | sign x /= sign y = rectifyZeroSign (somaBN x (symmetric y))
