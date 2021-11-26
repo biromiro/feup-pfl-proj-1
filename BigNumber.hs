@@ -1,7 +1,6 @@
 module BigNumber where
 
 import Auxiliar
-import Auxiliar (rectifyZeroSign)
 
 scanner :: String -> BigNumber
 scanner "-" = error "Invalid BigNumber from string '-'"
@@ -22,7 +21,7 @@ output num
     strNum = foldl (\x y -> x ++ show y) "" (mag num)
 
 outputDiv :: (BigNumber, BigNumber) -> String
-outputDiv (x, y) = "quotient: " ++ output x ++ "; remainder: " ++ output y
+outputDiv (x, y) = "quotient: " ++ output x ++ ", remainder: " ++ output y
 
 convToInt :: BigNumber -> Int
 convToInt y = read (output y) :: Int

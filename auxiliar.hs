@@ -42,14 +42,18 @@ rmleadzeros x
     result = dropWhile (== 0) x
 
 usomaaux :: Magnitude -> Magnitude -> Int -> Magnitude
-usomaaux [] [] c = [1 | c == 1]
-usomaaux x [] c = head x + c : tail x
-usomaaux [] y c = head y + c : tail y
-usomaaux (x : xs) (y : ys) c
-  | res > 9 = res `mod` 10 : usomaaux xs ys 1
-  | otherwise = res : usomaaux xs ys 0
+usomaaux [] [] c = [c]
+usomaaux left right c
+  | res > 9 = res `mod` 10 : usomaaux newRight newLeft 1
+  | otherwise = res : usomaaux newRight newLeft 0
   where
-    res = x + y + c
+    newRight = if null right then [] else tail right
+    newLeft = if null left then [] else tail left
+    res
+      | null left && null right = c
+      | null left = head right + c
+      | null right = head left + c
+      | otherwise = head right + head left + c
 
 usoma :: Magnitude -> Magnitude -> Magnitude
 usoma x y = rmleadzeros (reverse (usomaaux (reverse x) (reverse y) 0))
@@ -102,8 +106,8 @@ udivaux [] d q
   | cmpMag q d = [0]
   | otherwise = quotientcount q d
 udivaux (x : xs) d q
-  | cmpMag q d = 0 : udivaux xs d (q ++ [x])
-  | otherwise = k ++ udivaux xs d (rmleadzeros (usub q (umul k d) ++ [x]))
+  | cmpMag d q = k ++ udivaux xs d (rmleadzeros (usub q (umul k d) ++ [x]))
+  | otherwise = 0 : udivaux xs d (q ++ [x])
   where
     k = quotientcount q d
 
