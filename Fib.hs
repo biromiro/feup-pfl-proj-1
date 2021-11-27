@@ -14,7 +14,7 @@ fibRecBN (True, [0]) = scanner "0"
 fibRecBN (True, [1]) = scanner "1"
 fibRecBN n = fibRecBN (n `subBN` scanner "1") `somaBN` fibRecBN (n `subBN` scanner "2")
 
-fibLista :: (Integral a) => a -> a
+fibLista :: Integer -> Integer
 fibLista 0 = 0
 fibLista 1 = 1
 fibLista n =

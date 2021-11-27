@@ -61,12 +61,17 @@ usoma x y = rmleadzeros (reverse (usomaaux (reverse x) (reverse y) 0))
 -- assumes x is the largest
 usubaux :: Magnitude -> Magnitude -> Int -> Magnitude
 usubaux [] [] 0 = []
-usubaux x [] c = head x - c : tail x
-usubaux (x : xs) (y : ys) c
-  | res < 0 = res `mod` 10 : usubaux xs ys 1
-  | otherwise = res : usubaux xs ys 0
+usubaux right left c
+  | res < 0 = res `mod` 10 : usubaux newRight newLeft 1
+  | otherwise = res : usubaux newRight newLeft 0
   where
-    res = x - (y + c)
+    newRight = if null right then [] else tail right
+    newLeft = if null left then [] else tail left
+    res
+      | null left && null right = -c
+      | null left = head right - c
+      | null right = -(head left + c)
+      | otherwise = head right - (head left + c)
 
 -- subtracts the smallest from the largest
 usub :: Magnitude -> Magnitude -> Magnitude
@@ -103,8 +108,8 @@ quotientcount x div
 
 udivaux :: Magnitude -> Magnitude -> Magnitude -> Magnitude
 udivaux [] d q
-  | cmpMag q d = [0]
-  | otherwise = quotientcount q d
+  | cmpMag d q = quotientcount q d
+  | otherwise = [0]
 udivaux (x : xs) d q
   | cmpMag d q = k ++ udivaux xs d (rmleadzeros (usub q (umul k d) ++ [x]))
   | otherwise = 0 : udivaux xs d (q ++ [x])
